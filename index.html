@@ -2,33 +2,19 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Matematika Test</title>
+
+<!-- MathLive -->
+<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.core.css">
+<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css">
+<script src="https://unpkg.com/mathlive"></script>
 
 <style>
 body{font-family:sans-serif;background:#f2f2f2;padding:6px}
 .card{background:#fff;border-radius:10px;padding:8px;margin:6px 0}
 h4{margin:4px 0}
-
-.variants button{
-  padding:8px 12px;
-  margin:3px;
-  border:none;
-  border-radius:8px;
-  background:#e0e0e0;
-  font-weight:bold;
-}
-.variants button.active{
-  background:#2196f3;
-  color:#fff;
-}
-
 .row{display:flex;gap:6px;align-items:center}
-input{
-  flex:1;
-  padding:7px;
-  font-size:15px;
-}
 .kbtn{
   background:#1976d2;
   color:white;
@@ -37,116 +23,46 @@ input{
   padding:7px 10px;
   font-size:18px;
 }
-
-.keyboard{
-  display:none;
-  margin-top:6px;
-  background:#e3f2fd;
-  padding:6px;
-  border-radius:10px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:5px;
-}
-.keyboard button{
-  background:#2196f3;
-  color:white;
-  border:none;
-  border-radius:8px;
-  padding:8px;
-  font-size:14px;
+math-field{
+  flex:1;
+  min-height:42px;
+  font-size:20px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  padding:4px;
 }
 </style>
 </head>
 
 <body>
+
 <div id="app"></div>
 
 <script>
-let activeInput=null;
-function openKB(id,input){
-  document.querySelectorAll('.keyboard').forEach(k=>k.style.display='none');
-  document.getElementById(id).style.display='grid';
-  activeInput=input;
-}
-function add(v){
-  if(activeInput) activeInput.value+=v;
-}
-
-function mathKB(){
-return `
-<button onclick="add('1')">1</button><button onclick="add('2')">2</button><button onclick="add('3')">3</button>
-<button onclick="add('+')">+</button><button onclick="add('-')">−</button>
-
-<button onclick="add('4')">4</button><button onclick="add('5')">5</button><button onclick="add('6')">6</button>
-<button onclick="add('×')">×</button><button onclick="add('÷')">÷</button>
-
-<button onclick="add('7')">7</button><button onclick="add('8')">8</button><button onclick="add('9')">9</button>
-<button onclick="add('(')">(</button><button onclick="add(')')">)</button>
-
-<button onclick="add('0')">0</button><button onclick="add('.')">.</button>
-<button onclick="add('a/b')">a/b</button><button onclick="add('^')">^</button><button onclick="add('=')">=</button>
-
-<button onclick="add('√(')">√</button><button onclick="add('∛(')">∛</button><button onclick="add('x²')">x²</button>
-<button onclick="add('x³')">x³</button><button onclick="add('|x|')">|x|</button>
-
-<button onclick="add('sin(')">sin</button><button onclick="add('cos(')">cos</button><button onclick="add('tan(')">tan</button>
-<button onclick="add('cot(')">cot</button><button onclick="add('!')">!</button>
-
-<button onclick="add('log(')">log</button><button onclick="add('ln(')">ln</button>
-<button onclick="add('π')">π</button><button onclick="add('e')">e</button>
-`;
-}
-
-function variants(n){
-let letters = n<=32?['A','B','C','D']:['A','B','C','D','E','F'];
-return letters.map(l=>`<button onclick="select(this)">${l}</button>`).join('');
-}
-function select(btn){
-let p=btn.parentNode;
-p.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-}
-
 let app=document.getElementById('app');
 
-// 1–32
-for(let i=1;i<=32;i++){
-app.innerHTML+=`
-<div class="card">
-<h4>${i}-savol</h4>
-<div class="variants">${variants(i)}</div>
-</div>`;
-}
-
-// 33–35
-for(let i=33;i<=35;i++){
-app.innerHTML+=`
-<div class="card">
-<h4>${i}-savol</h4>
-<div class="variants">${variants(i)}</div>
-</div>`;
-}
-
-// 36–45
 for(let i=36;i<=45;i++){
 app.innerHTML+=`
 <div class="card">
 <h4>${i}-savol</h4>
 
 <div class="row">
-<input placeholder="(a)">
-<button class="kbtn" onclick="openKB('ka${i}',this.previousElementSibling)">⌨</button>
+<math-field placeholder="(a)"></math-field>
 </div>
-<div class="keyboard" id="ka${i}">${mathKB()}</div>
 
 <div class="row">
-<input placeholder="(b)">
-<button class="kbtn" onclick="openKB('kb${i}',this.previousElementSibling)">⌨</button>
+<math-field placeholder="(b)"></math-field>
 </div>
-<div class="keyboard" id="kb${i}">${mathKB()}</div>
 </div>`;
 }
+
+// MathLive sozlamalari
+MathLive.makeMathField = MathLive.makeMathField || (()=>{});
+MathLive.defaultOptions = {
+  virtualKeyboardMode: "onfocus",
+  virtualKeyboards: "numeric symbols functions"
+};
 </script>
+
 </body>
 </html>
