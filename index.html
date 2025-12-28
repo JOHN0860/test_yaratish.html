@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RASH TEST</title>
 
-<!-- MathLive -->
 <link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.core.css">
 <link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css">
 <script src="https://unpkg.com/mathlive"></script>
@@ -36,6 +35,12 @@ body{
   padding:10px 14px;
   border-radius:10px;
   background:#e0e0e0;
+  cursor:pointer;
+  user-select:none;
+}
+.variant.active{
+  background:#1976d2;
+  color:#fff;
 }
 .answer{
   margin-bottom:10px;
@@ -90,7 +95,7 @@ for(let i=33;i<=35;i++){
   </div>`);
 }
 
-/* 36–45 (a,b) yozma */
+/* 36–45 (a,b) yozma — TEGILMADI */
 for(let i=36;i<=45;i++){
   document.write(`
   <div class="card">
@@ -113,6 +118,17 @@ for(let i=36;i<=45;i++){
     </div>
   </div>`);
 }
+
+/* 🔥 VARIANT TANLASH LOGIKASI */
+document.addEventListener("click", function(e){
+  if(e.target.classList.contains("variant")){
+    const parent = e.target.parentElement;
+    parent.querySelectorAll(".variant").forEach(v=>{
+      v.classList.remove("active");
+    });
+    e.target.classList.add("active");
+  }
+});
 </script>
 
 </body>
