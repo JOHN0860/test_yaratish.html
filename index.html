@@ -3,47 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>1–45 Test</title>
+<title>Matematika Test</title>
 
 <style>
-body{font-family:sans-serif;background:#f2f2f2;padding:5px}
-.card{background:#fff;padding:8px;margin:6px 0;border-radius:8px}
+body{font-family:sans-serif;background:#f2f2f2;padding:6px}
+.card{background:#fff;border-radius:10px;padding:8px;margin:6px 0}
 h4{margin:4px 0}
 
-.btns button{
-  padding:6px 10px;
+.variants button{
+  padding:8px 12px;
   margin:3px;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   background:#e0e0e0;
+  font-weight:bold;
+}
+.variants button.active{
+  background:#2196f3;
+  color:#fff;
 }
 
-.row{display:flex;gap:5px;align-items:center}
+.row{display:flex;gap:6px;align-items:center}
 input{
   flex:1;
-  padding:6px;
+  padding:7px;
   font-size:15px;
 }
 .kbtn{
-  background:#ffd54f;
+  background:#1976d2;
+  color:white;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
+  padding:7px 10px;
   font-size:18px;
-  padding:5px 8px;
 }
 
 .keyboard{
   display:none;
   margin-top:6px;
-  grid-template-columns:repeat(6,1fr);
-  gap:4px;
+  background:#e3f2fd;
+  padding:6px;
+  border-radius:10px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
 }
 .keyboard button{
-  padding:7px;
-  font-size:14px;
+  background:#2196f3;
+  color:white;
   border:none;
-  border-radius:6px;
-  background:#e0e0e0;
+  border-radius:8px;
+  padding:8px;
+  font-size:14px;
 }
 </style>
 </head>
@@ -53,50 +64,58 @@ input{
 
 <script>
 let activeInput=null;
-function toggleKB(id,input){
-  let kb=document.getElementById(id);
-  kb.style.display = kb.style.display==="grid"?"none":"grid";
+function openKB(id,input){
+  document.querySelectorAll('.keyboard').forEach(k=>k.style.display='none');
+  document.getElementById(id).style.display='grid';
   activeInput=input;
 }
-function add(v){ if(activeInput) activeInput.value+=v; }
+function add(v){
+  if(activeInput) activeInput.value+=v;
+}
 
-function mathKeys(){
+function mathKB(){
 return `
 <button onclick="add('1')">1</button><button onclick="add('2')">2</button><button onclick="add('3')">3</button>
-<button onclick="add('+')">+</button><button onclick="add('-')">−</button><button onclick="add('×')">×</button>
+<button onclick="add('+')">+</button><button onclick="add('-')">−</button>
 
 <button onclick="add('4')">4</button><button onclick="add('5')">5</button><button onclick="add('6')">6</button>
-<button onclick="add('÷')">÷</button><button onclick="add('=')">=</button><button onclick="add('^')">^</button>
+<button onclick="add('×')">×</button><button onclick="add('÷')">÷</button>
 
 <button onclick="add('7')">7</button><button onclick="add('8')">8</button><button onclick="add('9')">9</button>
-<button onclick="add('(')">(</button><button onclick="add(')')">)</button><button onclick="add('|x|')">|x|</button>
+<button onclick="add('(')">(</button><button onclick="add(')')">)</button>
 
 <button onclick="add('0')">0</button><button onclick="add('.')">.</button>
-<button onclick="add('√(')">√</button><button onclick="add('∛(')">∛</button>
-<button onclick="add('ⁿ√(')">ⁿ√</button><button onclick="add('!')">!</button>
+<button onclick="add('a/b')">a/b</button><button onclick="add('^')">^</button><button onclick="add('=')">=</button>
 
-<button onclick="add('x²')">x²</button><button onclick="add('x³')">x³</button>
-<button onclick="add('½')">½</button><button onclick="add('⅓')">⅓</button>
-<button onclick="add('¼')">¼</button><button onclick="add('π')">π</button>
+<button onclick="add('√(')">√</button><button onclick="add('∛(')">∛</button><button onclick="add('x²')">x²</button>
+<button onclick="add('x³')">x³</button><button onclick="add('|x|')">|x|</button>
 
-<button onclick="add('sin(')">sin</button><button onclick="add('cos(')">cos</button>
-<button onclick="add('tan(')">tan</button><button onclick="add('cot(')">cot</button>
+<button onclick="add('sin(')">sin</button><button onclick="add('cos(')">cos</button><button onclick="add('tan(')">tan</button>
+<button onclick="add('cot(')">cot</button><button onclick="add('!')">!</button>
+
 <button onclick="add('log(')">log</button><button onclick="add('ln(')">ln</button>
-
-<button onclick="add('e')">e</button>
+<button onclick="add('π')">π</button><button onclick="add('e')">e</button>
 `;
 }
 
-let app=document.getElementById("app");
+function variants(n){
+let letters = n<=32?['A','B','C','D']:['A','B','C','D','E','F'];
+return letters.map(l=>`<button onclick="select(this)">${l}</button>`).join('');
+}
+function select(btn){
+let p=btn.parentNode;
+p.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+}
+
+let app=document.getElementById('app');
 
 // 1–32
 for(let i=1;i<=32;i++){
 app.innerHTML+=`
 <div class="card">
 <h4>${i}-savol</h4>
-<div class="btns">
-<button>A</button><button>B</button><button>C</button><button>D</button>
-</div>
+<div class="variants">${variants(i)}</div>
 </div>`;
 }
 
@@ -105,10 +124,7 @@ for(let i=33;i<=35;i++){
 app.innerHTML+=`
 <div class="card">
 <h4>${i}-savol</h4>
-<div class="btns">
-<button>A</button><button>B</button><button>C</button>
-<button>D</button><button>E</button><button>F</button>
-</div>
+<div class="variants">${variants(i)}</div>
 </div>`;
 }
 
@@ -120,16 +136,15 @@ app.innerHTML+=`
 
 <div class="row">
 <input placeholder="(a)">
-<button class="kbtn" onclick="toggleKB('a${i}',this.previousElementSibling)">⌨️</button>
+<button class="kbtn" onclick="openKB('ka${i}',this.previousElementSibling)">⌨</button>
 </div>
-<div class="keyboard" id="a${i}">${mathKeys()}</div>
+<div class="keyboard" id="ka${i}">${mathKB()}</div>
 
 <div class="row">
 <input placeholder="(b)">
-<button class="kbtn" onclick="toggleKB('b${i}',this.previousElementSibling)">⌨️</button>
+<button class="kbtn" onclick="openKB('kb${i}',this.previousElementSibling)">⌨</button>
 </div>
-<div class="keyboard" id="b${i}">${mathKeys()}</div>
-
+<div class="keyboard" id="kb${i}">${mathKB()}</div>
 </div>`;
 }
 </script>
