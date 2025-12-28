@@ -2,77 +2,116 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Matematika Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RASH TEST</title>
 
-<script src="https://unpkg.com/mathlive/dist/mathlive.min.js"></script>
+<!-- MathLive -->
+<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.core.css">
+<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css">
+<script src="https://unpkg.com/mathlive"></script>
 
 <style>
-body{font-family:sans-serif;background:#f3f3f3;padding:6px}
-.card{background:#fff;border-radius:10px;padding:8px;margin-bottom:8px}
-h4{margin:4px 0}
-.variants button{
-  padding:8px 12px;
-  margin:4px;
-  border-radius:8px;
-  border:none;
-  background:#e0e0e0;
-  font-size:16px;
+body{
+  font-family:Arial, sans-serif;
+  background:#f4f6f8;
+  margin:0;
+  padding:10px;
 }
-.variants button.active{background:#1976d2;color:#fff}
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px;
+}
+.q-title{
+  font-weight:bold;
+  margin-bottom:8px;
+}
+.variants{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.variant{
+  padding:10px 14px;
+  border-radius:10px;
+  background:#e0e0e0;
+}
+.answer{
+  margin-bottom:10px;
+}
+.answer label{
+  font-size:16px;
+  margin-bottom:4px;
+  display:block;
+}
 .mathbox{
   width:100%;
-  border:1px solid #ccc;
-  border-radius:8px;
-  padding:8px;
-  font-size:20px;
+  min-height:52px;
+  font-size:22px;
+  padding:10px;
+  border:2px solid #ccc;
+  border-radius:10px;
+  background:#fff;
 }
 </style>
 </head>
 
 <body>
-<div id="app"></div>
 
 <script>
-const app=document.getElementById('app');
-
-// 1–32
+/* 1–32 (A–D) */
 for(let i=1;i<=32;i++){
-app.innerHTML+=`
-<div class="card">
-<h4>${i}-savol</h4>
-<div class="variants">
-${['A','B','C','D'].map(v=>`<button onclick="select(this)">${v}</button>`).join('')}
-</div>
-</div>`;
+  document.write(`
+  <div class="card">
+    <div class="q-title">${i}-savol</div>
+    <div class="variants">
+      <div class="variant">A</div>
+      <div class="variant">B</div>
+      <div class="variant">C</div>
+      <div class="variant">D</div>
+    </div>
+  </div>`);
 }
 
-// 33–35
+/* 33–35 (A–F) */
 for(let i=33;i<=35;i++){
-app.innerHTML+=`
-<div class="card">
-<h4>${i}-savol</h4>
-<div class="variants">
-${['A','B','C','D','E','F'].map(v=>`<button onclick="select(this)">${v}</button>`).join('')}
-</div>
-</div>`;
+  document.write(`
+  <div class="card">
+    <div class="q-title">${i}-savol</div>
+    <div class="variants">
+      <div class="variant">A</div>
+      <div class="variant">B</div>
+      <div class="variant">C</div>
+      <div class="variant">D</div>
+      <div class="variant">E</div>
+      <div class="variant">F</div>
+    </div>
+  </div>`);
 }
 
-// 36–45 FULL MATH
+/* 36–45 (a,b) yozma */
 for(let i=36;i<=45;i++){
-app.innerHTML+=`
-<div class="card">
-<h4>${i}-savol</h4>
-<math-field class="mathbox" virtual-keyboard-mode="onfocus">(a)</math-field>
-<br><br>
-<math-field class="mathbox" virtual-keyboard-mode="onfocus">(b)</math-field>
-</div>`;
-}
+  document.write(`
+  <div class="card">
+    <div class="q-title">${i}-savol</div>
 
-function select(btn){
-  const p=btn.parentElement;
-  [...p.children].forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+    <div class="answer">
+      <label>(a)</label>
+      <math-field class="mathbox"
+        virtual-keyboard-mode="onfocus"
+        virtual-keyboard-theme="material">
+      </math-field>
+    </div>
+
+    <div class="answer">
+      <label>(b)</label>
+      <math-field class="mathbox"
+        virtual-keyboard-mode="onfocus"
+        virtual-keyboard-theme="material">
+      </math-field>
+    </div>
+  </div>`);
 }
 </script>
 
