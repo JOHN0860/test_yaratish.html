@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Test yaratish</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f4f4;
+  padding:10px;
+}
+.card{
+  background:#fff;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:12px;
+}
+h3{margin:5px 0}
+.options button{
+  margin:3px;
+  padding:8px 12px;
+}
+.selected{
+  background:#007bff;
+  color:#fff;
+}
+input{
+  width:100%;
+  padding:8px;
+  margin:4px 0;
+}
+.math-keyboard button{
+  width:18%;
+  margin:3px;
+  padding:10px;
+}
+.create-btn{
+  width:100%;
+  padding:14px;
+  font-size:18px;
+  background:#28a745;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>➕ Test yaratish</h2>
+
+<div id="questions"></div>
+
+<button class="create-btn" onclick="createTest()">🧪 Testni yaratish</button>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+let answers = {};
+
+// 1–32 (ABCD)
+for(let i=1;i<=32;i++){
+  document.getElementById("questions").innerHTML += `
+  <div class="card">
+    <h3>${i}-savol (A–D)</h3>
+    <div class="options">
+      ${["A","B","C","D"].map(o=>`
+        <button onclick="setAns(${i},'${o}',this)">${o}</button>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+// 33–35 (ABCDEF)
+for(let i=33;i<=35;i++){
+  document.getElementById("questions").innerHTML += `
+  <div class="card">
+    <h3>${i}-savol (A–F)</h3>
+    <div class="options">
+      ${["A","B","C","D","E","F"].map(o=>`
+        <button onclick="setAns(${i},'${o}',this)">${o}</button>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+// 36–45 (a,b yozma + matematik klaviatura)
+for(let i=36;i<=45;i++){
+  document.getElementById("questions").innerHTML += `
+  <div class="card">
+    <h3>${i}-savol</h3>
+    <p>(a)</p>
+    <input id="q${i}a" placeholder="Javob (a)">
+    <p>(b)</p>
+    <input id="q${i}b" placeholder="Javob (b)">
+    <div class="math-keyboard">
+      ${["1","2","3","+","-","4","5","6","×","÷","7","8","9","(",")","0",".","√","^"].map(k=>`
+        <button onclick="insert('${i}','${k}')">${k}</button>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+function setAns(q,val,btn){
+  answers[q]=val;
+  btn.parentNode.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+}
+
+function insert(q,val){
+  let a=document.getElementById("q"+q+"a");
+  let b=document.getElementById("q"+q+"b");
+  if(document.activeElement===b) b.value+=val;
+  else a.value+=val;
+}
+
+function genCode(){
+  return "TEST-"+Math.floor(100000+Math.random()*900000);
+}
+
+function createTest(){
+  let data={
+    type:"create",
+    test_code:genCode(),
+    keys:{...answers}
+  };
+
+  for(let i=36;i<=45;i++){
+    data.keys[i+"a"]=document.getElementById("q"+i+"a").value;
+    data.keys[i+"b"]=document.getElementById("q"+i+"b").value;
+  }
+
+  tg.sendData(JSON.stringify(data));
+  tg.close(); // 🔥 WEB APP YOPILADI
+}
+</script>
+
+</body>
+</html>
