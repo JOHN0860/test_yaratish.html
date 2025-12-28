@@ -2,52 +2,136 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<title>Test yaratish</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1–45 Test</title>
+
 <style>
-body{font-family:sans-serif;background:#f5f5f5}
-.card{background:#fff;padding:15px;margin:10px;border-radius:10px}
-input{width:100%;padding:8px;margin:5px 0}
-.math-keyboard button{width:23%;padding:10px;margin:3px}
-button.main{background:#0a7cff;color:#fff;padding:12px;width:100%;border:none;border-radius:8px}
+body{font-family:sans-serif;background:#f2f2f2;padding:5px}
+.card{background:#fff;padding:8px;margin:6px 0;border-radius:8px}
+h4{margin:4px 0}
+
+.btns button{
+  padding:6px 10px;
+  margin:3px;
+  border:none;
+  border-radius:6px;
+  background:#e0e0e0;
+}
+
+.row{display:flex;gap:5px;align-items:center}
+input{
+  flex:1;
+  padding:6px;
+  font-size:15px;
+}
+.kbtn{
+  background:#ffd54f;
+  border:none;
+  border-radius:6px;
+  font-size:18px;
+  padding:5px 8px;
+}
+
+.keyboard{
+  display:none;
+  margin-top:6px;
+  grid-template-columns:repeat(6,1fr);
+  gap:4px;
+}
+.keyboard button{
+  padding:7px;
+  font-size:14px;
+  border:none;
+  border-radius:6px;
+  background:#e0e0e0;
+}
 </style>
 </head>
+
 <body>
-
-<h3>📘 Test yaratish</h3>
-
-<div id="questions"></div>
-
-<button class="main" onclick="finishTest()">✅ Testni yakunlash</button>
+<div id="app"></div>
 
 <script>
-let qDiv=document.getElementById("questions");
-let answers={};
+let activeInput=null;
+function toggleKB(id,input){
+  let kb=document.getElementById(id);
+  kb.style.display = kb.style.display==="grid"?"none":"grid";
+  activeInput=input;
+}
+function add(v){ if(activeInput) activeInput.value+=v; }
 
-for(let i=1;i<=45;i++){
- let html=`<div class="card"><b>${i}-savol</b><br>`;
- if(i<=32){
-   ["A","B","C","D"].forEach(v=>{
-     html+=`<label><input type="radio" name="q${i}" value="${v}">${v}</label>`;
-   });
- }else if(i<=35){
-   ["A","B","C","D","E","F"].forEach(v=>{
-     html+=`<label><input type="radio" name="q${i}" value="${v}">${v}</label>`;
-   });
- }else{
-   html+=`(a)<input onfocus="setActive(this)"><br>(b)<input onfocus="setActive(this)">`;
- }
- html+="</div>";
- qDiv.innerHTML+=html;
+function mathKeys(){
+return `
+<button onclick="add('1')">1</button><button onclick="add('2')">2</button><button onclick="add('3')">3</button>
+<button onclick="add('+')">+</button><button onclick="add('-')">−</button><button onclick="add('×')">×</button>
+
+<button onclick="add('4')">4</button><button onclick="add('5')">5</button><button onclick="add('6')">6</button>
+<button onclick="add('÷')">÷</button><button onclick="add('=')">=</button><button onclick="add('^')">^</button>
+
+<button onclick="add('7')">7</button><button onclick="add('8')">8</button><button onclick="add('9')">9</button>
+<button onclick="add('(')">(</button><button onclick="add(')')">)</button><button onclick="add('|x|')">|x|</button>
+
+<button onclick="add('0')">0</button><button onclick="add('.')">.</button>
+<button onclick="add('√(')">√</button><button onclick="add('∛(')">∛</button>
+<button onclick="add('ⁿ√(')">ⁿ√</button><button onclick="add('!')">!</button>
+
+<button onclick="add('x²')">x²</button><button onclick="add('x³')">x³</button>
+<button onclick="add('½')">½</button><button onclick="add('⅓')">⅓</button>
+<button onclick="add('¼')">¼</button><button onclick="add('π')">π</button>
+
+<button onclick="add('sin(')">sin</button><button onclick="add('cos(')">cos</button>
+<button onclick="add('tan(')">tan</button><button onclick="add('cot(')">cot</button>
+<button onclick="add('log(')">log</button><button onclick="add('ln(')">ln</button>
+
+<button onclick="add('e')">e</button>
+`;
 }
 
-let active=null;
-function setActive(el){active=el}
+let app=document.getElementById("app");
 
-function finishTest(){
- let code="TEST-"+Math.floor(100000+Math.random()*900000);
- alert("Test kodi: "+code+"\nO‘quvchilarga bering");
+// 1–32
+for(let i=1;i<=32;i++){
+app.innerHTML+=`
+<div class="card">
+<h4>${i}-savol</h4>
+<div class="btns">
+<button>A</button><button>B</button><button>C</button><button>D</button>
+</div>
+</div>`;
+}
+
+// 33–35
+for(let i=33;i<=35;i++){
+app.innerHTML+=`
+<div class="card">
+<h4>${i}-savol</h4>
+<div class="btns">
+<button>A</button><button>B</button><button>C</button>
+<button>D</button><button>E</button><button>F</button>
+</div>
+</div>`;
+}
+
+// 36–45
+for(let i=36;i<=45;i++){
+app.innerHTML+=`
+<div class="card">
+<h4>${i}-savol</h4>
+
+<div class="row">
+<input placeholder="(a)">
+<button class="kbtn" onclick="toggleKB('a${i}',this.previousElementSibling)">⌨️</button>
+</div>
+<div class="keyboard" id="a${i}">${mathKeys()}</div>
+
+<div class="row">
+<input placeholder="(b)">
+<button class="kbtn" onclick="toggleKB('b${i}',this.previousElementSibling)">⌨️</button>
+</div>
+<div class="keyboard" id="b${i}">${mathKeys()}</div>
+
+</div>`;
 }
 </script>
-
 </body>
 </html>
