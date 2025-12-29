@@ -1,134 +1,165 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RASH TEST</title>
-
-<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.core.css">
-<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css">
-<script src="https://unpkg.com/mathlive"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Milliy Sertifikat Test</title>
 
 <style>
-body{
-  font-family:Arial, sans-serif;
-  background:#f4f6f8;
-  margin:0;
-  padding:10px;
-}
-.card{
-  background:#fff;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:12px;
-}
-.q-title{
-  font-weight:bold;
-  margin-bottom:8px;
-}
-.variants{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.variant{
-  padding:10px 14px;
-  border-radius:10px;
-  background:#e0e0e0;
-  cursor:pointer;
-  user-select:none;
-}
-.variant.active{
-  background:#1976d2;
-  color:#fff;
-}
-.answer{
-  margin-bottom:10px;
-}
-.answer label{
-  font-size:16px;
-  margin-bottom:4px;
-  display:block;
-}
-.mathbox{
-  width:100%;
-  min-height:52px;
-  font-size:22px;
-  padding:10px;
-  border:2px solid #ccc;
-  border-radius:10px;
-  background:#fff;
-}
+body { font-family: Arial, sans-serif; margin: 0; padding: 10px; background:#f5f5f5;}
+h2 { text-align:center; }
+.question { background:#fff; padding:10px; margin-bottom:10px; border-radius:8px; }
+.hidden { display:none; }
+button { padding:10px; font-size:16px; border:none; border-radius:6px; cursor:pointer;}
+.create-btn { background:#28a745; color:#fff; width:100%; margin-top:15px;}
+.variant label { margin-right:10px; }
+.correct { color:green; font-weight:bold; }
+.wrong { color:red; font-weight:bold; }
+input[type=text] { width:100%; padding:6px; margin-top:5px; }
+.code-box { background:#222; color:#0f0; padding:10px; text-align:center; font-size:20px; }
 </style>
 </head>
 
 <body>
 
+<h2>🧪 Test yaratish</h2>
+
+<div id="createArea"></div>
+
+<button id="createTestBtn" class="create-btn hidden">🧪 Test yaratish</button>
+
+<div id="createdResult" class="hidden">
+  <p>📌 Test kodi:</p>
+  <div class="code-box" id="testCode"></div>
+</div>
+
+<hr>
+
+<h2>✍️ Test yechish</h2>
+
+<input type="text" id="enterCode" placeholder="Test kodini kiriting">
+<button onclick="loadTest()">Testni ochish</button>
+
+<div id="solveArea"></div>
+
 <script>
-/* 1–32 (A–D) */
-for(let i=1;i<=32;i++){
-  document.write(`
-  <div class="card">
-    <div class="q-title">${i}-savol</div>
-    <div class="variants">
-      <div class="variant">A</div>
-      <div class="variant">B</div>
-      <div class="variant">C</div>
-      <div class="variant">D</div>
-    </div>
-  </div>`);
-}
+const createArea = document.getElementById("createArea");
+const createBtn = document.getElementById("createTestBtn");
+const createdResult = document.getElementById("createdResult");
+const testCodeBox = document.getElementById("testCode");
+let questions = [];
 
-/* 33–35 (A–F) */
-for(let i=33;i<=35;i++){
-  document.write(`
-  <div class="card">
-    <div class="q-title">${i}-savol</div>
-    <div class="variants">
-      <div class="variant">A</div>
-      <div class="variant">B</div>
-      <div class="variant">C</div>
-      <div class="variant">D</div>
-      <div class="variant">E</div>
-      <div class="variant">F</div>
-    </div>
-  </div>`);
-}
+// 1–45 savollarni chizish
+for (let i = 1; i <= 45; i++) {
+  let q = document.createElement("div");
+  q.className = "question";
+  q.innerHTML = `<b>${i}-savol</b><br>
+    <input type="text" placeholder="Savol matni" oninput="checkFilled()">`;
 
-/* 36–45 (a,b) yozma — TEGILMADI */
-for(let i=36;i<=45;i++){
-  document.write(`
-  <div class="card">
-    <div class="q-title">${i}-savol</div>
+  // Variantlar
+  let vCount = (i <= 32) ? 4 : (i <= 35 ? 6 : 2);
+  let vDiv = document.createElement("div");
+  vDiv.className = "variant";
 
-    <div class="answer">
-      <label>(a)</label>
-      <math-field class="mathbox"
-        virtual-keyboard-mode="onfocus"
-        virtual-keyboard-theme="material">
-      </math-field>
-    </div>
-
-    <div class="answer">
-      <label>(b)</label>
-      <math-field class="mathbox"
-        virtual-keyboard-mode="onfocus"
-        virtual-keyboard-theme="material">
-      </math-field>
-    </div>
-  </div>`);
-}
-
-/* 🔥 VARIANT TANLASH LOGIKASI */
-document.addEventListener("click", function(e){
-  if(e.target.classList.contains("variant")){
-    const parent = e.target.parentElement;
-    parent.querySelectorAll(".variant").forEach(v=>{
-      v.classList.remove("active");
-    });
-    e.target.classList.add("active");
+  for (let v = 0; v < vCount; v++) {
+    let letter = String.fromCharCode(65 + v);
+    vDiv.innerHTML += `
+      <label>
+        <input type="radio" name="q${i}" value="${v}">
+        ${letter}
+      </label>
+      <input type="text" placeholder="Variant ${letter}">
+      <br>`;
   }
-});
+
+  q.appendChild(vDiv);
+  createArea.appendChild(q);
+}
+
+function checkFilled() {
+  let filled = false;
+  document.querySelectorAll(".question").forEach((q, idx) => {
+    let text = q.querySelector("input[type=text]").value.trim();
+    if (text !== "") filled = true;
+  });
+  createBtn.classList.toggle("hidden", !filled);
+}
+
+// Test yaratish
+createBtn.onclick = () => {
+  questions = [];
+  document.querySelectorAll(".question").forEach((q, idx) => {
+    let qText = q.querySelector("input[type=text]").value.trim();
+    if (qText === "") return;
+
+    let vars = [];
+    q.querySelectorAll(".variant input[type=text]").forEach(v => {
+      vars.push(v.value);
+    });
+
+    let correct = q.querySelector("input[type=radio]:checked");
+    if (!correct) return;
+
+    questions.push({
+      q: qText,
+      v: vars,
+      c: parseInt(correct.value)
+    });
+  });
+
+  if (questions.length === 0) {
+    alert("Kamida 1 ta savol bo‘lishi kerak");
+    return;
+  }
+
+  let code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  localStorage.setItem(code, JSON.stringify(questions));
+
+  testCodeBox.textContent = code;
+  createdResult.classList.remove("hidden");
+};
+
+// Test yechish
+function loadTest() {
+  let code = document.getElementById("enterCode").value.trim().toUpperCase();
+  let data = localStorage.getItem(code);
+  if (!data) {
+    alert("Test topilmadi");
+    return;
+  }
+
+  let qs = JSON.parse(data);
+  let area = document.getElementById("solveArea");
+  area.innerHTML = "";
+
+  qs.forEach((q, i) => {
+    let d = document.createElement("div");
+    d.className = "question";
+    d.innerHTML = `<b>${i+1}-savol:</b> ${q.q}<br>`;
+    q.v.forEach((v, idx) => {
+      d.innerHTML += `
+        <label>
+          <input type="radio" name="s${i}" value="${idx}">
+          ${v}
+        </label><br>`;
+    });
+    area.appendChild(d);
+  });
+
+  let btn = document.createElement("button");
+  btn.textContent = "Natijani ko‘rish";
+  btn.onclick = () => checkResult(qs);
+  area.appendChild(btn);
+}
+
+function checkResult(qs) {
+  let correct = 0;
+  qs.forEach((q, i) => {
+    let sel = document.querySelector(`input[name=s${i}]:checked`);
+    if (sel && parseInt(sel.value) === q.c) correct++;
+  });
+  alert(`To‘g‘ri: ${correct}\nNoto‘g‘ri: ${qs.length - correct}`);
+}
 </script>
 
 </body>
