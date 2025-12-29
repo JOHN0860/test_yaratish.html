@@ -90,58 +90,28 @@ for(let i=33;i<=35;i++){
   </div>`;
 }
 
-// 36–45 (A B + math input)
+<!-- 36–45 savollar (YOZMA JAVOB, A/B BELGILASH YO‘Q) -->
+<script>
 for(let i=36;i<=45;i++){
   app.innerHTML+=`
   <div class="card">
     <div class="q">${i}-savol</div>
 
-    <label>
-      <input type="radio" name="q${i}" onclick="setAB(${i},'A')"> A
-    </label>
-    <div class="mathbox">
-      <math-field id="A${i}"></math-field>
+    <div class="write-row">
+      <div class="label">A javob</div>
+      <span class="kbd" onclick="openMath('A${i}')">🧮</span>
+      <math-field id="A${i}" virtual-keyboard-mode="onfocus"></math-field>
     </div>
 
-    <label>
-      <input type="radio" name="q${i}" onclick="setAB(${i},'B')"> B
-    </label>
-    <div class="mathbox">
-      <math-field id="B${i}"></math-field>
+    <div class="write-row">
+      <div class="label">B javob</div>
+      <span class="kbd" onclick="openMath('B${i}')">🧮</span>
+      <math-field id="B${i}" virtual-keyboard-mode="onfocus"></math-field>
     </div>
   </div>`;
 }
 
-function setAns(q,v){
-  data[q]={type:"select",value:v};
-  showBtn();
-}
-
-function setAB(q,v){
-  const val = document.getElementById(v+q).getValue();
-  data[q]={type:"math",variant:v,value:val};
-  showBtn();
-}
-
-function showBtn(){
-  if(Object.keys(data).length>=1){
-    document.getElementById("createBtn").style.display="block";
-  }
-}
-
-function genCode(){
-  const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let r="";
-  for(let i=0;i<6;i++) r+=c[Math.floor(Math.random()*c.length)];
-  return r;
-}
-
-function createTest(){
-  const code=genCode();
-  console.log({code,data});
-  document.getElementById("code").innerHTML="📌 Test kodi:<br>"+code;
+function openMath(id){
+  document.getElementById(id).focus();
 }
 </script>
-
-</body>
-</html>
