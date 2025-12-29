@@ -3,108 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <title>Test yaratish</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- MathLive -->
-<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.core.css">
-<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css">
 <script src="https://unpkg.com/mathlive/dist/mathlive.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.core.css">
 
 <style>
 body{
-  font-family: Arial;
-  background:#f2f4f7;
+  font-family:Arial,sans-serif;
+  background:#f3f4f6;
   padding:15px;
 }
 .card{
   background:#fff;
-  padding:12px;
-  margin-bottom:12px;
-  border-radius:8px;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
 }
 .q{
   font-weight:bold;
-  margin-bottom:6px;
+  margin-bottom:10px;
 }
-label{margin-right:15px;}
-.mathbox{
-  margin-top:8px;
+.row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+.kbd{
+  font-size:22px;
+  cursor:pointer;
 }
 math-field{
-  width:100%;
-  min-height:45px;
+  flex:1;
+  min-height:48px;
+  font-size:18px;
   border:1px solid #ccc;
-  border-radius:6px;
-  padding:5px;
+  border-radius:8px;
+  padding:6px;
 }
 button{
   width:100%;
-  padding:15px;
+  padding:14px;
   font-size:18px;
-  background:#4CAF50;
+  background:#22c55e;
   color:white;
   border:none;
-  border-radius:10px;
-  margin-top:20px;
+  border-radius:12px;
+  cursor:pointer;
 }
-#code{
+.code{
   text-align:center;
-  font-size:28px;
+  font-size:26px;
+  font-weight:bold;
   margin-top:15px;
-  letter-spacing:3px;
 }
 </style>
 </head>
 
 <body>
 
-<h2 style="text-align:center;">✅ Test yaratish</h2>
+<h2>📝 Test yaratish</h2>
 <div id="app"></div>
 
-<button id="createBtn" style="display:none" onclick="createTest()">✅ Test yaratish</button>
-<div id="code"></div>
+<button onclick="createTest()">✅ Test yaratish</button>
+<div class="code" id="code"></div>
 
 <script>
 const app = document.getElementById("app");
-let data = {};
 
-// 1–32 (A B C D)
-for(let i=1;i<=32;i++){
+/* 1–35: A/B BELGILASH */
+for(let i=1;i<=35;i++){
   app.innerHTML+=`
   <div class="card">
     <div class="q">${i}-savol</div>
-    ${["A","B","C","D"].map(v=>`
-      <label><input type="radio" name="q${i}" onclick="setAns(${i},'${v}')"> ${v}</label>
-    `).join("")}
+    <label><input type="radio" name="q${i}" value="A"> A</label><br>
+    <label><input type="radio" name="q${i}" value="B"> B</label>
   </div>`;
 }
 
-// 33–35 (A B C D E F)
-for(let i=33;i<=35;i++){
-  app.innerHTML+=`
-  <div class="card">
-    <div class="q">${i}-savol</div>
-    ${["A","B","C","D","E","F"].map(v=>`
-      <label><input type="radio" name="q${i}" onclick="setAns(${i},'${v}')"> ${v}</label>
-    `).join("")}
-  </div>`;
-}
-
-<!-- 36–45 savollar (YOZMA JAVOB, A/B BELGILASH YO‘Q) -->
-<script>
+/* 36–45: YOZMA (A/B QO‘LDA) */
 for(let i=36;i<=45;i++){
   app.innerHTML+=`
   <div class="card">
     <div class="q">${i}-savol</div>
 
-    <div class="write-row">
-      <div class="label">A javob</div>
+    <div class="row">
+      <b>A:</b>
       <span class="kbd" onclick="openMath('A${i}')">🧮</span>
       <math-field id="A${i}" virtual-keyboard-mode="onfocus"></math-field>
     </div>
 
-    <div class="write-row">
-      <div class="label">B javob</div>
+    <div class="row">
+      <b>B:</b>
       <span class="kbd" onclick="openMath('B${i}')">🧮</span>
       <math-field id="B${i}" virtual-keyboard-mode="onfocus"></math-field>
     </div>
@@ -114,4 +105,28 @@ for(let i=36;i<=45;i++){
 function openMath(id){
   document.getElementById(id).focus();
 }
+
+/* TEST YARATISH */
+function createTest(){
+  let test={};
+
+  for(let i=1;i<=35;i++){
+    let v=document.querySelector(`input[name="q${i}"]:checked`);
+    if(v) test[i]=v.value;
+  }
+
+  for(let i=36;i<=45;i++){
+    test[i]={
+      A:document.getElementById("A"+i).value,
+      B:document.getElementById("B"+i).value
+    };
+  }
+
+  const code=Math.random().toString(36).substring(2,8).toUpperCase();
+  localStorage.setItem("TEST_"+code,JSON.stringify(test));
+  document.getElementById("code").innerText="📌 Test kodi: "+code;
+}
 </script>
+
+</body>
+</html>
