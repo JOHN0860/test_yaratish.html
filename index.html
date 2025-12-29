@@ -1,164 +1,133 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Milliy Sertifikat Test</title>
+<meta charset="UTF-8">
+<title>Test tizimi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body { font-family: Arial, sans-serif; margin: 0; padding: 10px; background:#f5f5f5;}
-h2 { text-align:center; }
-.question { background:#fff; padding:10px; margin-bottom:10px; border-radius:8px; }
-.hidden { display:none; }
-button { padding:10px; font-size:16px; border:none; border-radius:6px; cursor:pointer;}
-.create-btn { background:#28a745; color:#fff; width:100%; margin-top:15px;}
-.variant label { margin-right:10px; }
-.correct { color:green; font-weight:bold; }
-.wrong { color:red; font-weight:bold; }
-input[type=text] { width:100%; padding:6px; margin-top:5px; }
-.code-box { background:#222; color:#0f0; padding:10px; text-align:center; font-size:20px; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 10px;
+}
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+h3 {
+  margin-top: 0;
+}
+.variants label {
+  display: block;
+  margin: 5px 0;
+}
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+}
+.hidden {
+  display: none;
+}
+.code-box {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  background: #eee;
+  padding: 10px;
+  border-radius: 8px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>🧪 Test yaratish</h2>
+<div id="creator">
 
-<div id="createArea"></div>
+<h2>📝 Test yaratish</h2>
 
-<button id="createTestBtn" class="create-btn hidden">🧪 Test yaratish</button>
+<div id="questions"></div>
 
-<div id="createdResult" class="hidden">
+<button onclick="createTest()">✅ Test yaratish</button>
+
+<div id="result" class="hidden">
   <p>📌 Test kodi:</p>
   <div class="code-box" id="testCode"></div>
 </div>
 
+</div>
+
 <hr>
 
+<div id="solver">
 <h2>✍️ Test yechish</h2>
-
-<input type="text" id="enterCode" placeholder="Test kodini kiriting">
-<button onclick="loadTest()">Testni ochish</button>
-
-<div id="solveArea"></div>
+<input type="text" id="codeInput" placeholder="Test kodini kiriting">
+<button onclick="openTest()">Testni ochish</button>
+</div>
 
 <script>
-const createArea = document.getElementById("createArea");
-const createBtn = document.getElementById("createTestBtn");
-const createdResult = document.getElementById("createdResult");
-const testCodeBox = document.getElementById("testCode");
-let questions = [];
+const questionsDiv = document.getElementById("questions");
+let testData = {};
 
-// 1–45 savollarni chizish
-for (let i = 1; i <= 45; i++) {
-  let q = document.createElement("div");
-  q.className = "question";
-  q.innerHTML = `<b>${i}-savol</b><br>
-    <input type="text" placeholder="Savol matni" oninput="checkFilled()">`;
+function renderQuestions() {
+  for (let i = 1; i <= 45; i++) {
+    const card = document.createElement("div");
+    card.className = "card";
 
-  // Variantlar
-  let vCount = (i <= 32) ? 4 : (i <= 35 ? 6 : 2);
-  let vDiv = document.createElement("div");
-  vDiv.className = "variant";
+    let html = `<h3>${i}-savol</h3><div class="variants">`;
 
-  for (let v = 0; v < vCount; v++) {
-    let letter = String.fromCharCode(65 + v);
-    vDiv.innerHTML += `
-      <label>
-        <input type="radio" name="q${i}" value="${v}">
-        ${letter}
-      </label>
-      <input type="text" placeholder="Variant ${letter}">
-      <br>`;
+    if (i <= 32) {
+      ["A","B","C","D"].forEach(v=>{
+        html += `<label><input type="radio" name="q${i}" value="${v}"> ${v}</label>`;
+      });
+    }
+    else if (i <= 35) {
+      ["A","B","C","D","E","F"].forEach(v=>{
+        html += `<label><input type="radio" name="q${i}" value="${v}"> ${v}</label>`;
+      });
+    }
+    else {
+      html += `
+      A: <input type="text" placeholder="A javob"><br><br>
+      B: <input type="text" placeholder="B javob">
+      `;
+    }
+
+    html += `</div>`;
+    card.innerHTML = html;
+    questionsDiv.appendChild(card);
   }
-
-  q.appendChild(vDiv);
-  createArea.appendChild(q);
 }
 
-function checkFilled() {
-  let filled = false;
-  document.querySelectorAll(".question").forEach((q, idx) => {
-    let text = q.querySelector("input[type=text]").value.trim();
-    if (text !== "") filled = true;
-  });
-  createBtn.classList.toggle("hidden", !filled);
+renderQuestions();
+
+function createTest() {
+  const code = Math.random().toString(36).substring(2,8).toUpperCase();
+  testData[code] = "created";
+  document.getElementById("testCode").innerText = code;
+  document.getElementById("result").classList.remove("hidden");
 }
 
-// Test yaratish
-createBtn.onclick = () => {
-  questions = [];
-  document.querySelectorAll(".question").forEach((q, idx) => {
-    let qText = q.querySelector("input[type=text]").value.trim();
-    if (qText === "") return;
-
-    let vars = [];
-    q.querySelectorAll(".variant input[type=text]").forEach(v => {
-      vars.push(v.value);
-    });
-
-    let correct = q.querySelector("input[type=radio]:checked");
-    if (!correct) return;
-
-    questions.push({
-      q: qText,
-      v: vars,
-      c: parseInt(correct.value)
-    });
-  });
-
-  if (questions.length === 0) {
-    alert("Kamida 1 ta savol bo‘lishi kerak");
+function openTest() {
+  const code = document.getElementById("codeInput").value.toUpperCase();
+  if (!testData[code]) {
+    alert("❌ Noto‘g‘ri kod");
     return;
   }
-
-  let code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  localStorage.setItem(code, JSON.stringify(questions));
-
-  testCodeBox.textContent = code;
-  createdResult.classList.remove("hidden");
-};
-
-// Test yechish
-function loadTest() {
-  let code = document.getElementById("enterCode").value.trim().toUpperCase();
-  let data = localStorage.getItem(code);
-  if (!data) {
-    alert("Test topilmadi");
-    return;
-  }
-
-  let qs = JSON.parse(data);
-  let area = document.getElementById("solveArea");
-  area.innerHTML = "";
-
-  qs.forEach((q, i) => {
-    let d = document.createElement("div");
-    d.className = "question";
-    d.innerHTML = `<b>${i+1}-savol:</b> ${q.q}<br>`;
-    q.v.forEach((v, idx) => {
-      d.innerHTML += `
-        <label>
-          <input type="radio" name="s${i}" value="${idx}">
-          ${v}
-        </label><br>`;
-    });
-    area.appendChild(d);
-  });
-
-  let btn = document.createElement("button");
-  btn.textContent = "Natijani ko‘rish";
-  btn.onclick = () => checkResult(qs);
-  area.appendChild(btn);
-}
-
-function checkResult(qs) {
-  let correct = 0;
-  qs.forEach((q, i) => {
-    let sel = document.querySelector(`input[name=s${i}]:checked`);
-    if (sel && parseInt(sel.value) === q.c) correct++;
-  });
-  alert(`To‘g‘ri: ${correct}\nNoto‘g‘ri: ${qs.length - correct}`);
+  alert("✅ Test ochildi, variantlarni belgilang");
 }
 </script>
 
